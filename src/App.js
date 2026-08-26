@@ -153,7 +153,7 @@ const App = () => {
   const countriesWithProvinces = ['United States', 'Canada'];
 
   // Comprehensive mapping of countries to calling codes
-  const countryCallingCodes = {
+  const countryCallingCodes = useMemo(() => ({
     'United States': '+1', 'Canada': '+1', 'Mexico': '+52', 'United States Virgin Islands': '+1340',
     'Northern Mariana Islands': '+1670', 'Guam': '+1671', 'American Samoa': '+1684', 'Puerto Rico': '+1787',
     'Bahamas': '+1242', 'Barbados': '+1246', 'Anguilla': '+1264', 'Antigua and Barbuda': '+1268',
@@ -216,7 +216,7 @@ const App = () => {
     'Qatar': '+974', 'Bhutan': '+975', 'Mongolia': '+976', 'Nepal': '+977', 'Iran': '+98',
     'Tajikistan': '+992', 'Turkmenistan': '+993', 'Azerbaijan': '+994', 'Georgia': '+995',
     'Kyrgyzstan': '+996', 'Uzbekistan': '+998',
-  };
+  }),[]);
 
   // Separate states into domestic and export for optgroups
   const domesticStates = Object.keys(stateRegions).filter(state =>
@@ -244,7 +244,7 @@ const App = () => {
     setCustomerCountry(''); // Reset country when location changes
     setCustomerProvinceState(''); // Reset province/state when location changes
     setCustomerPhone('');   // Reset phone when location changes
-  }, [stateRegions , regionalHeads]);
+  }, [stateRegions , regionalHeads , selectedState]);
 
   // Effect to update phone number prefix when country changes (for international)
   useEffect(() => {
