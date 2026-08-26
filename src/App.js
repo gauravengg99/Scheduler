@@ -244,7 +244,7 @@ const App = () => {
     setCustomerCountry(''); // Reset country when location changes
     setCustomerProvinceState(''); // Reset province/state when location changes
     setCustomerPhone('');   // Reset phone when location changes
-  }, [selectedState]);
+  }, [stateRegions , regionalHeads]);
 
   // Effect to update phone number prefix when country changes (for international)
   useEffect(() => {
