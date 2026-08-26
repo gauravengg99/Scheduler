@@ -266,7 +266,7 @@ const App = () => {
       // Clear phone if neither international with country nor domestic Indian is selected
       setCustomerPhone('');
     }
-  }, [customerCountry, isInternationalSelected, isDomesticIndianState]);
+  }, [customerCountry, customerPhone , isInternationalSelected, isDomesticIndianState , countryCallingCodes]);
 
 
   // Handle dropdown change for state selection
