@@ -17,7 +17,7 @@ const App = () => {
   const [customerProvinceState, setCustomerProvinceState] = useState(''); // New: State for customer's province/state
 
   // Define the mapping of states to regions and then to Regional Heads
-  const regionalHeads = useMemo(() => (
+  const regionalHeads = useMemo(() => ({
     'West': {
       fullName: 'MISS HEMAKSHI SHAH', // Full name in ALL CAPS
       title: '(Sales Head - West)',    // Title with specific casing
