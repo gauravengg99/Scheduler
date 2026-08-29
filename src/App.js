@@ -276,32 +276,35 @@ const App = () => {
 
   // Handle phone number input change
   const handlePhoneChange = (e) => {
-    const rawValue = e.target.value;
-    let processedValue = rawValue;
+  const rawValue = e.target.value;
 
-    if (isDomesticIndianState) {
-      // For domestic, ensure +91- prefix and limit to 10 digits after prefix
-      const digitsOnly = rawValue.replace(/\D/g, '');
-      processedValue = '+91-' + digitsOnly.substring(0, 10);
-    } else if (isInternationalSelected && customerCountry) {
-      const code = countryCallingCodes[customerCountry];
-      if (code) {
-        // For international with a selected country, ensure the country code prefix is maintained
-        if (!rawValue.startsWith(code)) {
-          processedValue = code + rawValue; // Prepend code if missing
-        } else {
-          processedValue = rawValue; // User is typing after the code
-        }
-      } else {
-        // For 'Other International' or international without a specific country code, allow any input
-        processedValue = rawValue;
-      }
-    } else {
-      // Fallback for cases where no specific handling is needed (e.g., initial state)
-      processedValue = rawValue;
+  if (isDomesticIndianState) {
+    // Remove prefix first
+    const numberPart = rawValue.replace(/^\+91-?/, "");
+
+    // Keep only digits
+    const digits = numberPart.replace(/\D/g, "").slice(0, 10);
+
+    setCustomerPhone(`${digits}`);
+    return;
+  }
+
+  if (isInternationalSelected && customerCountry) {
+    const code = countryCallingCodes[customerCountry];
+
+    if (code) {
+      const numberPart = rawValue.replace(code, "");
+      const digits = numberPart.replace(/\D/g, "");
+
+      setCustomerPhone(`${digits}`);
+      return;
     }
-    setCustomerPhone(processedValue);
-  };
+  }
+
+  setCustomerPhone(rawValue);
+};
+
+//https://calendly.com/v-vaghela-gauravengg/30min?name=Gaurav%20Service&email=service.gauravengineering%40gmail.com&a1=Hi%2C%20I%20am%20from%20Chhattisgarh%20and%20would%20like%20to%20schedule%20an%20EPR%20Cement%20bags%20consultation.%20I%20am%20attending%20on%20behalf%20of%20Merk%20india%20in%20Chhattisgarh.%20In%20case%20video%20conferencing%20is%20not%20accessible%2C%20please%20contact%20us%20directly%20at%20%2B91-7861881347.&a2=Merk%20india&a3=Hi%2C%20I%20am%20from%20Chhattisgarh%20and%20would%20like%20to%20schedule%20an%20EPR%20Cement%20bags%20consultation.%20Being%20from%20Chhattisgarh%2C%20your%20consultation%20will%20be%20moved%20ahead%20with%20MR.%20VASU%20VAGHELA%20%28Sales%20Head%20-%20East%29.%20Cell%20No%3A%20%2B91-7861881347.&minDate=2026-08-07&month=2026-08&maxDate=2026-08-07&date=2026-08-10
 
   // Function to construct the Calendly URL with pre-filled information
   const getSchedulingUrl = () => {
@@ -312,7 +315,7 @@ const App = () => {
       // Name parameter remains just the customer's name
       params.append('name', customerName);
       params.append('email', customerEmail);
-
+      
       // Determine the location string for Calendly notes
       let locationString = customerCountry || selectedState;
       if (requiresProvinceState && customerProvinceState) {
