@@ -1,5 +1,5 @@
 import './App.css';
-import {useState , useEffect} from 'react'
+import {useState , useEffect, useMemo} from 'react'
 
 
 const App = () => {
@@ -17,7 +17,7 @@ const App = () => {
   const [customerProvinceState, setCustomerProvinceState] = useState(''); // New: State for customer's province/state
 
   // Define the mapping of states to regions and then to Regional Heads
-  const regionalHeads = {
+  const regionalHeads = useMemo(() => ({
     'West': {
       fullName: 'MISS HEMAKSHI SHAH', // Full name in ALL CAPS
       title: '(Sales Head - West)',    // Title with specific casing
@@ -66,10 +66,10 @@ const App = () => {
       schedulingLink: 'https://calendly.com/gauravengg-sales/30min',
       description: 'Your consultation will be moved ahead with the Technical Sales Director.',
     },
-  };
+  }),[]);
 
   // Define states and their regions, including new export options
-  const stateRegions = {
+  const stateRegions = useMemo(() => ({
     'Gujarat': 'West',
     'Maharashtra': 'West',
     'Goa': 'West',
@@ -118,10 +118,10 @@ const App = () => {
     'Other International': 'International-Other',
     'North America': 'International-Americas',
     'South America': 'International-Americas',
-  };
+  }),[]);
 
   // Data for countries within each export region
-  const countryData = {
+  const countryData = useMemo(() => ({
     'Asia': ['China', 'Japan', 'South Korea', 'Indonesia', 'Thailand', 'Vietnam', 'Philippines', 'Pakistan', 'Bangladesh', 'Sri Lanka', 'Malaysia', 'Singapore', 'India'],
     'Africa': ['Nigeria', 'South Africa', 'Egypt', 'Kenya', 'Ghana', 'Morocco', 'Algeria', 'Ethiopia', 'South Sudan', 'Tunisia', 'Libya', 'Gambia', 'Senegal', 'Mauritania', 'Mali', 'Guinea', 'Ivory Coast', 'Burkina Faso', 'Niger', 'Togo', 'Benin', 'Mauritius', 'Liberia', 'Sierra Leone', 'Chad', 'Central African Republic', 'Cameroon', 'Cape Verde', 'São Tomé and Príncipe', 'Equatorial Guinea', 'Gabon', 'Republic of the Congo', 'Democratic Republic of the Congo', 'Angola', 'Guinea-Bissau', 'Seychelles', 'Sudan', 'Rwanda', 'Djibouti', 'Tanzania', 'Uganda', 'Burundi', 'Mozambique', 'Zambia', 'Madagascar', 'Zimbabwe', 'Namibia', 'Malawi', 'Lesotho', 'Botswana', 'Eswatini', 'Comoros', 'Saint Helena', 'Eritrea'],
     'North America': ['United States', 'Canada', 'Mexico', 'United States Virgin Islands', 'Northern Mariana Islands', 'Guam', 'American Samoa', 'Puerto Rico', 'Bahamas', 'Barbados', 'Anguilla', 'Antigua and Barbuda', 'British Virgin Islands', 'Cayman Islands', 'Bermuda', 'Grenada', 'Turks and Caicos Islands', 'Jamaica', 'Montserrat', 'Sint Maarten', 'Saint Lucia', 'Dominica', 'Saint Vincent and the Grenadines', 'Dominican Republic', 'Trinidad and Tobago', 'Saint Kitts and Nevis'],
@@ -130,10 +130,10 @@ const App = () => {
     'Europe': ['Germany', 'France', 'UK', 'Italy', 'Spain', 'Netherlands', 'Belgium', 'Sweden', 'Poland', 'Russia', 'Greece', 'Gibraltar', 'Portugal', 'Luxembourg', 'Ireland', 'Iceland', 'Albania', 'Malta', 'Cyprus', 'Finland', 'Bulgaria', 'Hungary', 'Lithuania', 'Latvia', 'Estonia', 'Moldova', 'Armenia', 'Belarus', 'Andorra', 'Monaco', 'San Marino', 'Vatican City', 'Ukraine', 'Serbia', 'Montenegro', 'Kosovo', 'Croatia', 'Slovenia', 'Bosnia and Herzegovina', 'North Macedonia', 'Romania', 'Switzerland', 'Czech Republic', 'Slovakia', 'Liechtenstein', 'Austria', 'Denmark', 'Norway'],
     'Australia': ['Australia', 'New Zealand'],
     'Other International': [], // No specific list, will use text input
-  };
+  }),[]);
 
   // New: Data for provinces/states for specific "big countries"
-  const provinceStateData = {
+  const provinceStateData = useMemo(() => ({
     'United States': [
       'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'Florida',
       'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine',
@@ -147,13 +147,13 @@ const App = () => {
       'Ontario', 'Prince Edward Island', 'Quebec', 'Saskatchewan'
     ],
     // Add more countries with their provinces/states as needed
-  };
+  }),[]);
 
   // Countries that require a province/state selection
   const countriesWithProvinces = ['United States', 'Canada'];
 
   // Comprehensive mapping of countries to calling codes
-  const countryCallingCodes = {
+  const countryCallingCodes = useMemo(() => ({
     'United States': '+1', 'Canada': '+1', 'Mexico': '+52', 'United States Virgin Islands': '+1340',
     'Northern Mariana Islands': '+1670', 'Guam': '+1671', 'American Samoa': '+1684', 'Puerto Rico': '+1787',
     'Bahamas': '+1242', 'Barbados': '+1246', 'Anguilla': '+1264', 'Antigua and Barbuda': '+1268',
@@ -216,7 +216,7 @@ const App = () => {
     'Qatar': '+974', 'Bhutan': '+975', 'Mongolia': '+976', 'Nepal': '+977', 'Iran': '+98',
     'Tajikistan': '+992', 'Turkmenistan': '+993', 'Azerbaijan': '+994', 'Georgia': '+995',
     'Kyrgyzstan': '+996', 'Uzbekistan': '+998',
-  };
+  }),[]);
 
   // Separate states into domestic and export for optgroups
   const domesticStates = Object.keys(stateRegions).filter(state =>
@@ -244,7 +244,7 @@ const App = () => {
     setCustomerCountry(''); // Reset country when location changes
     setCustomerProvinceState(''); // Reset province/state when location changes
     setCustomerPhone('');   // Reset phone when location changes
-  }, [selectedState]);
+  }, [stateRegions , regionalHeads , selectedState]);
 
   // Effect to update phone number prefix when country changes (for international)
   useEffect(() => {
@@ -266,7 +266,7 @@ const App = () => {
       // Clear phone if neither international with country nor domestic Indian is selected
       setCustomerPhone('');
     }
-  }, [customerCountry, isInternationalSelected, isDomesticIndianState]);
+  }, [customerCountry, customerPhone , isInternationalSelected, isDomesticIndianState , countryCallingCodes]);
 
 
   // Handle dropdown change for state selection
